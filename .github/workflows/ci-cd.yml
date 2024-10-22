@@ -20,17 +20,21 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          region: eu-central-1
+          registry-type: private
+
+      - name: Get the GitHub SHA
+        id: vars
+        run: echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+        shell: bash
 
       - name: Build, Tag, and Push Docker Image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: product-image
-          IMAGE_TAG: latest
+          ECR_REPOSITORY: app-image
+          IMAGE_TAG: ${{ steps.vars.outputs.sha }}
         run: |
-          docker build -t repository/app-image ./app
-          docker tag repository/app-image:latest 207567759290.dkr.ecr.eu-central-1.amazonaws.com/repository/app-image:latest
-          docker push 207567759290.dkr.ecr.eu-central-1.amazonaws.com/repository/app-image:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./app
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
