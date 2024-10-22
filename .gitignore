@@ -2,6 +2,7 @@
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
+*.tfvars
 
 # Node.js
 node_modules/
@@ -10,4 +11,3 @@ npm-debug.log
 
 # Docker
 *.log
-
