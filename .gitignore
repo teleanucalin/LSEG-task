@@ -2,7 +2,6 @@
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
-*.tfvars
 
 # Node.js
 node_modules/
