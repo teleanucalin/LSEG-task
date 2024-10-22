@@ -36,11 +36,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          registry-type: private
+          aws-region: eu-central-1
 
       - name: Get the GitHub SHA
         id: vars
@@ -53,8 +52,10 @@ jobs:
           ECR_REPOSITORY: app-image
           IMAGE_TAG: ${{ steps.vars.outputs.sha }}
         run: |
+          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 207567759290.dkr.ecr.eu-central-1.amazonaws.com
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./app
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG 207567759290.dkr.ecr.eu-central-1.amazonaws.com/$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push 207567759290.dkr.ecr.eu-central-1.amazonaws.com/$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
