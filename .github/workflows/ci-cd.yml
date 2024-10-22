@@ -49,7 +49,7 @@ jobs:
 
       - name: Build, Tag, and Push Docker Image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: repository
           ECR_REPOSITORY: app-image
           IMAGE_TAG: ${{ steps.vars.outputs.sha }}
         run: |
