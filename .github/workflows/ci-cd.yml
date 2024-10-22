@@ -13,8 +13,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./app
+
+      - name: Run Tests
+        run: npm test
+        working-directory: ./app
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: private
+        env:
+          AWS_REGION: eu-central-1
 
       - name: Get the GitHub SHA
         id: vars
@@ -23,13 +44,12 @@ jobs:
 
       - name: Build, Tag, and Push Docker Image
         env:
-          ECR_REPOSITORY: app-image
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: product-image
           IMAGE_TAG: ${{ steps.vars.outputs.sha }}
         run: |
-          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 207567759290.dkr.ecr.eu-central-1.amazonaws.com
-          docker build -t repository/app-image:$IMAGE_TAG ./app
-          docker tag repository/app-image:$IMAGE_TAG 207567759290.dkr.ecr.eu-central-1.amazonaws.com/repository/app-image:$IMAGE_TAG
-          docker push 207567759290.dkr.ecr.eu-central-1.amazonaws.com/repository/app-image:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./app
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
