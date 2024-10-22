@@ -24,7 +24,7 @@ This project demonstrates a 3-Tier Architecture deployed on AWS using ECS, ECR, 
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/your-username/your-repo.git
+    git clone https://github.com/teleanucalin/LSEG-task
     cd your-repo
     ```
 
