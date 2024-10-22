@@ -48,13 +48,7 @@ This project demonstrates a 3-Tier Architecture deployed on AWS using ECS, ECR, 
 
 ## Deployment
 
-Deployment is automated using the `deploy.sh` script. To deploy manually:
-
-```bash
-./deploy.sh
-```
-
-Alternatively, deployments are triggered automatically via GitHub Actions on every push to the `main` branch.
+Deployments are triggered automatically via GitHub Actions on every push to the `main` branch.
 
 ## Testing
 
